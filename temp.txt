@@ -1,0 +1,75 @@
+#include <gb/gb.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <rand.h>
+
+// #include "sprites\playing_cards\suits\r_top_corner.c"
+#include "sprites\playing_cards\backgrounds\bkg_fm_1.c"
+#include "sprites\playing_cards\backgrounds\bkg_hs_1.c"
+#include "sprites\playing_cards\backgrounds\bkg_reveal.c"
+#include "sprites\playing_cards\backgrounds\bkg_tiles_alt.c"
+
+#include "sprites\playing_cards\general_card\card_sprites.c"
+/*Notes about sprites
+tiles 16 is freed up for card_sprites
+tiles 99 is freed
+tiles 114-127 are free
+*/
+/*
+I think before I get carried away, getting hairy with some OOP in C, 
+I just should create a generator that produces random numbers between 1 & 13,
+then random numbers between 1 & 4
+
+
+
+spade_tileset = 18
+club_tilset = 38
+heart tileset = 53
+diamond tileset = 72
+*/
+
+
+int main(){
+    // UINT8 current_sp_index = 1;
+
+    set_bkg_data(0,49,bkg_tiles_alt);
+    set_bkg_tiles(0, 0, 20, 18, bkg_hs_1);
+
+    set_sprite_data(0,114,card_tiles);
+    set_sprite_tile(0,1);   //ace card
+    move_sprite(0,32,80);
+    set_sprite_tile(1, 18);
+    move_sprite(1,32, 88);
+
+    // //3 of hearts
+    set_sprite_tile(2,3);
+    move_sprite(2,40,80);
+    set_sprite_tile(3, 53);
+    move_sprite(3,40, 88);
+    set_sprite_tile(3, 53);
+    move_sprite(3,40, 88);
+    
+    set_sprite_tile(4,7);
+    move_sprite(2,40,80);
+    set_sprite_tile(3, 53);
+    move_sprite(3,40, 88);
+    set_sprite_tile(3, 53);
+    move_sprite(3,40, 88);
+
+
+
+    //displays sprite
+    SHOW_BKG;
+    SHOW_SPRITES;
+    DISPLAY_ON;
+
+    while(1){
+        switch(joypad()){
+            case(J_A):
+
+            case(J_B):   
+        }
+    }
+    
+    return 0;
+}

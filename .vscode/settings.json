@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "gb.h": "c",
+        "stdio.h": "c",
+        "stdbool.h": "c",
+        "bkg_hs_1.h": "c",
+        "crd.h": "c",
+        "card_sprites.h": "c",
+        "stdlib.h": "c"
+    }
+}
