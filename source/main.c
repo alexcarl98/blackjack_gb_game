@@ -285,8 +285,13 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     uint8_t temp_added = 16;        //this is for the hole card
 
     if (myDeck->size <= 11){
+        init_bkg(37);
+        fadein();
         free(myDeck->cards);
         shuffle(myDeck);
+        performantdelay(10);
+        fadeout();
+        init_gfx();        
         }
 
     if (!same_bet){
@@ -339,15 +344,10 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     display_last_card(&bot->hd);
     display_hand(&(human->hd));
 
-    // SHOW_BKG;
-    // SHOW_SPRITES;
-    // SHOW_WIN;
-    // DISPLAY_ON;
-
     fadein();
 
     //test for insurance HERE
-    if (bot->hd.cards[1].value == 1){
+    if ((bot->hd.card_reps[1] & 0b1111) == 1){      // if the up card is an Ace (==1)
         performantdelay(2);
         insurance(human);
         DrawNumber((uint8_t)4,0, (uint16_t)human->cash,6);
@@ -466,10 +466,8 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     set_bkg_tiles(8,3, 12, 3, bkg_tab);
     set_bkg_tiles(4,6, 14, 2, bkg_tab);
 
-    for(i = 0; i < 6; i++){
-        human->hd.cards[i].value = 0;
-        bot->hd.cards[i].value = 0;
-    }
+    for(i = 0; i < 8; i++){human->hd.card_reps[i] = 0;}
+    for(i = 0; i < 8; i++){bot->hd.card_reps[i] = 0;}
     human->hd.size = 0;
     human->hd.score = 0;
     human->hd.flags &= 0;
@@ -481,11 +479,7 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
         set_sprite_tile(i, 0);
     }
     
-
     *p_numOG = (*p_numOG) + 1;
-    
-    // wait_vbl_done();
-    // play_game(myDeck, human, bot, true);
 }
 void main(){
     printf("\n\n\n\n\n\n\t\t   Blackjack\n\n\n\n\n\n\t\t\tPRESS START");
@@ -509,8 +503,24 @@ void main(){
 
     while(1){
         play_game(&mdeck, &human, &bot, true);
-        
         performantdelay(9);
     }
-    
 }
+
+/******************************
+To do today:
+    >> change shuffle function to include an option 
+        of how many decks you can shuffle
+
+To Be Added:
+    >> Splitting
+    >> Changing Bets
+    >> Press left to view
+        how many decks have been played
+        and the current count on the deck
+    >> Option's menu to toggle rules
+    >> Sidebets (KB & LL)
+    >> should also have a little star or x as to 
+        whether the player followed basic strategy
+
+*******************************/

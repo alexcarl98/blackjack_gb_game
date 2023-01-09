@@ -6,11 +6,9 @@
 typedef struct CardSprite{
     UBYTE spr_id[2];
     UBYTE suit_rank;
-    UBYTE value;
     uint8_t x;
     uint8_t y;
 }card;
-
 
 void card_init(card * self, UBYTE s_r, uint8_t x, uint8_t y, uint8_t *sprite_count);
 
@@ -26,8 +24,6 @@ void card_init(card * self, UBYTE s_r, uint8_t x, uint8_t y, uint8_t *sprite_cou
     r = (s_r & rank_isolater);        //rank = Suit-Rank anded with rank isolater
     
     self->suit_rank = s_r;
-    if (r > 0xA){self->value = 0xA;}         //Jacks, queens, kings, have a value of 10 (0xA)
-    else{self->value = r;}                   // all other cards hold face value
     self->x = x;                             //x position
     self->y = y;                             //y position
 
@@ -122,6 +118,7 @@ void shuffle(deck * playing_deck){
 //================================( HAND )================================//
 typedef struct Hand{
     card cards[6];
+    UBYTE card_reps[8];
     UBYTE sc_spr_id[2];         //score sprite id's
     UBYTE design_spr_id[6];     // sprite id's for player's upcard design
     UBYTE score;
@@ -148,7 +145,7 @@ void display_card_1(UBYTE ID_rank, UBYTE ID_suit, uint8_t x, uint8_t y);
 void display_hand(hand *self);
 void display_score(hand *self);
 void recieve_card(hand *self, deck *d, uint8_t *sprite_count, uint8_t n);
-void score_calc(hand *self);
+void calculate_score(hand * self);
 void display_last_card(hand *h);
 
 void hand_init(hand *self, uint8_t start_x, uint8_t start_y, uint8_t *sprite_count){
@@ -158,17 +155,19 @@ void hand_init(hand *self, uint8_t start_x, uint8_t start_y, uint8_t *sprite_cou
     self->h_y = start_y;
     self->score = 0;
     self->size = 0;
-    for(i = 0; i < 6; i++){self->cards[i].value = 0x0;}
+    // for(i = 0; i < 6; i++){self->cards[i].value = 0x0;}
     self->flags = 0x0;
+
+    for(i = 0; i < 8; i++){self->card_reps[i] = 0;}     //set card_representation array to 0's
 
     //designate sprite tiles for the score
     set_sprite_tile(*sprite_count, 0);
     self->sc_spr_id[0] = (UBYTE)(*sprite_count);
-    *sprite_count = (*sprite_count) + 1;        //  THIS is how you increment pointers
+    *sprite_count += 1;                                 //  THIS is how you increment pointers
 
     set_sprite_tile(*sprite_count, 0);
     self->sc_spr_id[1] = (UBYTE)(*sprite_count);
-    *sprite_count = (*sprite_count) + 1;
+    *sprite_count += 1;
 
     //designate sprite tiles for the displaying card
     for(i = 0; i < 6; i++){
@@ -235,54 +234,50 @@ void recieve_card(hand *self, deck *d, uint8_t *sprite_count, uint8_t n){
     for(i = 0; i < n; i++){
         // tmp = d->card_rep[d->size];
         tmp = d->cards[(d->size - 1)];
+        self->card_reps[self->size] = tmp;
         d->size--;
         card_init(&(self->cards[(int)self->size]), tmp, tmp_x, self->h_y, &(*sprite_count));
         self->size += 1;
         tmp_x += 8;
     }
     //function will re-evaluate the score
-    score_calc(self);
+    calculate_score(self);
 }
 
-void score_calc(hand *self){
+void calculate_score(hand * self){
     uint8_t num_of_aces = 0;
-    uint8_t score = 0;
+    uint8_t tmp_score = 0;
     uint8_t evaluation_constant = 21;
     uint8_t i;
+    UBYTE temp;
     for (i = 0; i < self->size; i++){
+        temp = self->card_reps[i] & 0xF;                        // Isolate the value of the card by anding the hex representation with 0xF
         // if its an ace, keep track of the number of aces
-        if (self->cards[i].value == 1){num_of_aces += 1;}
+        if (temp == 1){num_of_aces += 1;}
+        // if it's 11, 12, 13, its value is 10
+        else if (temp > 10){tmp_score += 10;}
         //otherwise, add it's value
-        else{score += self->cards[i].value;}
+        else{tmp_score += temp;}
     }
     if (num_of_aces > 0){
         evaluation_constant -= (10 + num_of_aces);
-        if (score <= evaluation_constant){
+        if (tmp_score <= evaluation_constant){
             self->flags |= 0b100;          // set soft bit in h_flags to 1
-            score += (10 + num_of_aces);
-            if (self->size == 2 && score == 21){ 
-                self->flags |= 0b1;      // set blackjack flag to 1
-                }
-            else{
-                self->flags &= 0b11111110;     // set blackjack flag to 0
-                }
+            tmp_score += (10 + num_of_aces);
+            if (self->size == 2 && tmp_score == 21){self->flags |= 0b1;} // set blackjack flag to 1
+            /*  This might be redundant     */
+            else{self->flags &= 0b11111110;}     // set blackjack flag to 0
         }else{
             self->flags &= 0b11111011;         // set soft flag to 0
-            score += num_of_aces;
+            tmp_score += num_of_aces;
             self->flags &= 0b11111110;     // set blackjack flag to 0  [this may be redundant]
         }
     }
     if (self->size == 2){
-        if ((9 <= score) && (score <=11)){
-            self->flags |= 0b10000;     //set dd_hand flag to 1
-        }else{
-            self->flags &= 0b11101111;  //set dd_hand to 0
-        }
-        // if (self->cards[0].value == self->cards[1].value){
-        //     self->sp_hand = true;
-        // }else{self->sp_hand = false;}
+        if ((9 <= tmp_score) && (tmp_score <=11)){self->flags |= 0b10000;}     //set dd_hand flag to 1
+        else{self->flags &= 0b11101111;}  //set dd_hand to 0
     }
-    self->score = score;
+    self->score = tmp_score;
 }
 
 void display_last_card(hand *h){
