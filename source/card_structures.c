@@ -11,18 +11,8 @@ typedef struct CardSprite{
     uint8_t y;
 }card;
 
-void display_card(card *self);
+
 void card_init(card * self, UBYTE s_r, uint8_t x, uint8_t y, uint8_t *sprite_count);
-
-void display_card(card *self){
-    move_sprite(self->spr_id[0], self->x, self->y);     //rank  !1
-    move_sprite(self->spr_id[1], self->x, self->y+8);   // suit !H
-}
-
-void display_card_1(UBYTE ID_rank, UBYTE ID_suit, uint8_t x, uint8_t y){
-    move_sprite(ID_rank, x, y);     //rank  !1
-    move_sprite(ID_suit, x, y+8);   // suit !H
-}
 
 void card_init(card * self, UBYTE s_r, uint8_t x, uint8_t y, uint8_t *sprite_count){
     UBYTE r;
@@ -50,9 +40,10 @@ void card_init(card * self, UBYTE s_r, uint8_t x, uint8_t y, uint8_t *sprite_cou
     *sprite_count = (*sprite_count) + 1;
 }
 //================================( DECK )================================//
+
 typedef struct Deck{
     uint16_t size;
-    UBYTE card_rep[208];
+    UBYTE *cards;
 }deck;
 
 void shuffle(deck *playing_deck);
@@ -111,19 +102,19 @@ void shuffle(deck * playing_deck){
     0x4B,0x4C,
     };
 
-    uint8_t i;
-    UBYTE temp = 0x0;
-    uint8_t t;
-    playing_deck->size = 207;
+    uint8_t i,t;
+    playing_deck->size = 208;
+    playing_deck->cards = (UBYTE*)malloc(playing_deck->size * sizeof(UBYTE));
+    
     uint16_t seed = LY_REG;
     seed |= (uint16_t)DIV_REG << 8;
     initarand(seed);
     
-    for(i = 0;i < 208; i++){
+    for(i = 0;i < (playing_deck->size); i++){
         do{
-            t = ((uint8_t)rand() % (uint8_t)208);
+            t = ((uint8_t)rand() % (uint8_t)playing_deck->size);
         }while (card_values[t]== 0x0);
-        playing_deck->card_rep[i] = card_values[t];
+        playing_deck->cards[i] = card_values[t];
         card_values[t] = 0x0;
     }
 }
@@ -139,7 +130,6 @@ typedef struct Hand{
     uint8_t h_y;
     UBYTE flags;                //see below for the flags
 }hand;
-
 /****************** UBYTE flags ******************
 flags for the hand:
 0 - blackjack       -- bit 0 determines whether the hand has blackjack   
@@ -154,7 +144,8 @@ _
 **************************************************/
 
 void hand_init(hand *self, uint8_t start_x, uint8_t start_y, uint8_t *sprite_count);
-void display_many_cards(hand self);
+void display_card_1(UBYTE ID_rank, UBYTE ID_suit, uint8_t x, uint8_t y);
+void display_hand(hand *self);
 void display_score(hand *self);
 void recieve_card(hand *self, deck *d, uint8_t *sprite_count, uint8_t n);
 void score_calc(hand *self);
@@ -187,12 +178,18 @@ void hand_init(hand *self, uint8_t start_x, uint8_t start_y, uint8_t *sprite_cou
     }
 }
 
+void display_card_1(UBYTE ID_rank, UBYTE ID_suit, uint8_t x, uint8_t y){
+    move_sprite(ID_rank, x, y);     //rank  !1
+    move_sprite(ID_suit, x, y+8);   // suit !H
+}
+
 void display_hand(hand *self){
     uint8_t i;
     uint8_t temp_x = 0;
     for(i = 0; i < self->size; i++){
-        // display_card(&self->cards[i]);
-        display_card_1(self->cards[i].spr_id[0], self->cards[i].spr_id[1],self->h_x + temp_x, self->h_y);
+        display_card_1(self->cards[i].spr_id[0], 
+                        self->cards[i].spr_id[1],
+                        self->h_x + temp_x, self->h_y);
         temp_x += 8;
     }
     display_score(self);
@@ -236,7 +233,8 @@ void recieve_card(hand *self, deck *d, uint8_t *sprite_count, uint8_t n){
     uint8_t tmp_x;
     tmp_x = self->h_x + ((self->size) * 8);
     for(i = 0; i < n; i++){
-        tmp = d->card_rep[d->size];
+        // tmp = d->card_rep[d->size];
+        tmp = d->cards[(d->size - 1)];
         d->size--;
         card_init(&(self->cards[(int)self->size]), tmp, tmp_x, self->h_y, &(*sprite_count));
         self->size += 1;

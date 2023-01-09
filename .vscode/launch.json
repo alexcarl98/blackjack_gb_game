@@ -4,11 +4,12 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    
         {
             "type": "emulicious-debugger",
             "request": "launch",
             "name": "Launch in Emulicious",
-            "program": "${workspaceFolder}/misc_tester.gb",         //change this when debugging differently named .gb files
+            "program": "${workspaceFolder}/main.gb",         //change this when debugging differently named .gb files
             "port": 58870,
             "stopOnEntry": true
         }

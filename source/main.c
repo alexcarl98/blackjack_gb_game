@@ -6,28 +6,40 @@
 #include <stdbool.h>
 #include <rand.h>
 
-#include "sprites\bkgs_windows\bkg_5_cards.c"
-#include "sprites\bkgs_windows\bkg_6_cards.c"
-#include "sprites\bkgs_windows\bkg_sc_c1.c"
-#include "sprites\bkgs_windows\bkg_hs_opt.c"
-#include "sprites\bkgs_windows\bkg_win.c"
-#include "sprites\bkgs_windows\bkg_pushgm.c"
-#include "sprites\bkgs_windows\bkg_lose.c"
-#include "sprites\bkgs_windows\bkg_sur.c"
-#include "sprites\bkgs_windows\bkg_table.c"
-#include "sprites\bkgs_windows\bkg_tiles_alt.c"
-#include "sprites\bkgs_windows\bkg_insurance.c"
-#include "sprites\cards\card_sprites.c"
-#include "sprites\bkgs_windows\bkg_win_cash_bet.c"
+#include "..\res\bkg_single_cards.h"
+#include "..\res\bkg_sc_c1.h"
+#include "..\res\bkg_hs_opt.h"
+#include "..\res\bkg_win.h"
+#include "..\res\bkg_pushgm.h"
+#include "..\res\bkg_lose.h"
+#include "..\res\bkg_sur.h"
+#include "..\res\bkg_table.h"
+#include "..\res\bkg_insurance.h"
+#include "..\res\bkg_win_cash_bet.h"
+
+#include "..\res\bkg_tiles_alt.h"
+#include "..\res\card_sprites.h"
 #include "card_structures.c"
 
-// extern uint16_t p_cash;
 uint16_t numberOfGames = 0;
 uint8_t i,j,k;
 UBYTE player_split_cards[12];
 
 void dealer_draws(deck *d, hand *dlr_h, uint8_t * sprite_count);
 void play_game(deck * myDeck, player * human, player * bot, bool same_bet);
+void DrawNumber(uint8_t x,uint8_t y, uint16_t number,uint8_t digits);
+void performantdelay(uint8_t numloops);
+void fadeout();
+void fadein();
+void DealCards(deck * myDeck, player * human, player * bot, uint8_t * sprite_count);
+void PlayerMoves();
+void ResetGame();
+void DisplayDealerUpcard();
+UBYTE outcome(UBYTE p_score, UBYTE p_flags, UBYTE d_score, UBYTE d_flags);
+void settle_score(player *dlr, player *p);
+void reveal_hole_card(player *dlr, player *p);
+void insurance(player *p);
+
 
 void DrawNumber(uint8_t x,uint8_t y, uint16_t number,uint8_t digits){
     //tried to use BCD but i found this function online and used it instead
@@ -97,15 +109,14 @@ void fadein(){
 }
 
 void dealer_draws(deck *d, hand *dlr_h, uint8_t * sprite_count){
-    uint8_t hidden_card_x = 0;
-    uint8_t hidden_card_y = 1;
+    uint8_t hidden_card_x = 5;
+    // uint8_t hidden_card_y = 1;
 
     if (dlr_h->score < 17){
         while ((dlr_h->score < 17) && dlr_h->size < 6){
             recieve_card(dlr_h, d, sprite_count, 1);
-            set_bkg_tiles(hidden_card_x, hidden_card_y,9,5,bkg_6_cards);
+            set_bkg_tiles(hidden_card_x, 1,4,5,bkg_1_cards);
             hidden_card_x++;
-            set_bkg_tiles(0,hidden_card_y, 4,5,bkg_score_w_card1);
         }
     }
     
@@ -198,44 +209,45 @@ void insurance(player *p){
     }
 }
 
-void split_hand_game(deck *mydeck, player *human, uint8_t *sprite_count){
-    hand split_hand;
-    uint8_t hidden_card_x = 0;
-    uint8_t hidden_card_y = 8;
-    hand_init(&split_hand, 32,120,sprite_count);
-    card_init(&split_hand.cards[0], human->hd.cards[1].suit_rank, 32,120, sprite_count);
-    // player_split_cards[0] = human->hd.cards[0].suit_rank;
-    // player_split_cards[7] = human->hd.cards[1].suit_rank;
-    // human->hd.size = 1;
-    split_hand.size = 1;
-    // recieve_card(&(human->hd), mydeck,sprite_count,1);
-    //replacing the second card in the first hand with a new hand, whilst, maintaining the sprite ID's 
-    human->hd.cards[1].suit_rank = mydeck->card_rep[mydeck->size];
-    human->hd.cards[1].value = (mydeck->card_rep[mydeck->size] & 0b1111);
-    if (human->hd.cards[1].value > 10){
-        human->hd.cards[1].value = 10;
-    }
-    mydeck->size--;
-    score_calc(&(human->hd));
-    recieve_card(&split_hand, mydeck,sprite_count,1);
-    // recieve_card(mydeck);
+// void split_hand_game(deck *mydeck, player *human, uint8_t *sprite_count){
+//     hand split_hand;
+//     uint8_t hidden_card_x = 0;
+//     uint8_t hidden_card_y = 8;
+//     hand_init(&split_hand, 32,120,sprite_count);
+//     card_init(&split_hand.cards[0], human->hd.cards[1].suit_rank, 32,120, sprite_count);
+//     // player_split_cards[0] = human->hd.cards[0].suit_rank;
+//     // player_split_cards[7] = human->hd.cards[1].suit_rank;
+//     // human->hd.size = 1;
+//     split_hand.size = 1;
+//     // recieve_card(&(human->hd), mydeck,sprite_count,1);
+//     //replacing the second card in the first hand with a new hand, whilst, maintaining the sprite ID's 
+//     human->hd.cards[1].suit_rank = mydeck->card_rep[mydeck->size];
+//     human->hd.cards[1].value = (mydeck->card_rep[mydeck->size] & 0b1111);
+//     if (human->hd.cards[1].value > 10){
+//         human->hd.cards[1].value = 10;
+//     }
+//     mydeck->size--;
+//     score_calc(&(human->hd));
+//     recieve_card(&split_hand, mydeck,sprite_count,1);
+//     // recieve_card(mydeck);
 
-    set_bkg_tiles(hidden_card_x, hidden_card_y, 9, 5, bkg_6_cards);
-    hidden_card_x += 1;
-    set_bkg_tiles(0, hidden_card_y, 4, 5, bkg_score_w_card1);
-    set_bkg_tiles(hidden_card_x, hidden_card_y+5, 9, 5, bkg_6_cards);
-    hidden_card_x += 1;
-    set_bkg_tiles(0, hidden_card_y+5, 4, 5, bkg_score_w_card1);
+//     set_bkg_tiles(hidden_card_x, hidden_card_y, 9, 5, bkg_6_cards);
+//     hidden_card_x += 1;
+//     set_bkg_tiles(0, hidden_card_y, 4, 5, bkg_score_w_card1);
+//     set_bkg_tiles(hidden_card_x, hidden_card_y+5, 9, 5, bkg_6_cards);
+//     hidden_card_x += 1;
+//     set_bkg_tiles(0, hidden_card_y+5, 4, 5, bkg_score_w_card1);
 
     
-    display_hand(&(human->hd));
-    display_hand(&split_hand);
-}
+//     display_hand(&(human->hd));
+//     display_hand(&split_hand);
+// }
 
 void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     uint8_t bet = 0;    //this will hold the value of the input in that window
     uint8_t spr_c = 16;      //general sprite index (sprite count)  [starts at 16 since preceding sprite ID's were assigned to the human an bot hands]
-    uint8_t hidden_card_x = 0;
+    uint8_t hidden_card_x = 5;      //rename this variable
+    uint8_t temp_x = 0;
     uint8_t break_cond = 0;
     uint16_t *p_numOG = &numberOfGames;
     // UBYTE
@@ -244,7 +256,10 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     uint8_t hole_card_spr_id[3];
     uint8_t temp_added = 16;        //this is for the hole card
 
-    if (myDeck->size <= 11){shuffle(myDeck);}
+    if (myDeck->size <= 11){
+        free(myDeck->cards);
+        shuffle(myDeck);
+        }
 
     if (!same_bet){
         // this is where I'd pull up a window prompting 
@@ -260,6 +275,10 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
             human->cash -= human->bet;      //should eventually be put in the end
         }
     }
+    //display player's cash
+    DrawNumber((uint8_t)4,0, (uint16_t)human->cash,6);
+    set_win_tile_xy(10,0,3);
+    DrawNumber(14, 0, (uint16_t)human->bet,4);
     // hand_init(&(human->hd), 32, 80, &spr_c);
     // hand_init(&bot->hd, 32, 24, &spr_c);           //dealer's starting x = 32, y = 24
     //test
@@ -270,14 +289,10 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     // tmp_d.card_rep[2] = 0x31;
     // recieve_card(&human->hd, &tmp_d, &spr_c, 2);
     
+
     //deals 2 cards to both dealer and human
     recieve_card(&human->hd, myDeck, &spr_c, 2);
     recieve_card(&bot->hd, myDeck, &spr_c, 2);     //2 cards dealt to dealer
-
-    //display player's cash
-    DrawNumber((uint8_t)4,0, (uint16_t)human->cash,6);
-    set_win_tile_xy(10,0,3);
-    DrawNumber(14, 0, (uint16_t)human->bet,4);
 
     set_sprite_tile(bot->hd.cards[0].spr_id[0], 14);
     set_sprite_tile(bot->hd.cards[0].spr_id[1], 15);
@@ -291,14 +306,18 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     }
 
     set_sprite_tile(spr_c, 14);
-    hole_card_spr_id[2] = spr_c;        //broken
-    
+    hole_card_spr_id[2] = spr_c;
 
     set_sprite_prop(spr_c, S_FLIPY);
     move_sprite(spr_c, bot->hd.h_x, (bot->hd.h_y + temp_added));
     spr_c++;
 
-    for(i = 0; i < human->hd.size; i++){display_card(&bot->hd.cards[i]);}
+    for(i = 0; i < 2; i++){
+        display_card_1(bot->hd.cards[i].spr_id[0],
+                        bot->hd.cards[i].spr_id[1],
+                        bot->hd.h_x + temp_x, bot->hd.h_y);
+        temp_x += 8;
+    }
     display_last_card(&bot->hd);
     display_hand(&(human->hd));
 
@@ -318,9 +337,9 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
         DrawNumber(14, 0, (uint16_t)human->bet,4);
     }
     
-    if((human->hd.flags & 0b10000) != 0b0){
-        set_bkg_tiles(15, 1, 5, 2, bkg_hs_o);
-    }
+    // if((human->hd.flags & 0b10000) != 0b0){
+    //     set_bkg_tiles(15, 1, 5, 2, bkg_hs_o);
+    // }
 
     while(1){
         if (human->hd.score >= 21){
@@ -343,11 +362,11 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
                             break;
                         }
             }
-                    if (human->hd.size < 6){ 
+                    if (human->hd.size < 6){
+
                         recieve_card(&human->hd, myDeck, &spr_c, 1);
-                        set_bkg_tiles(hidden_card_x, 8, 9, 5, bkg_6_cards);
+                        set_bkg_tiles(hidden_card_x, 8, 4, 5, bkg_1_cards);
                         hidden_card_x += 1;
-                        set_bkg_tiles(0, 8, 4, 5, bkg_score_w_card1);
                         display_hand(&(human->hd));
                     }
                     if (joypad() == J_DOWN){break_cond = 1;}//if J_DOWN, no more turns
@@ -399,6 +418,7 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
         if((human->bet % 2) != 0){
             human->half_dollar = true;          //if the bet is an uneven number, then set the half dollar to true
         }
+        display_hand(&bot->hd);
         set_bkg_tiles(4, 5, 13, 3, bkg_surrender);
     }
 
@@ -414,6 +434,27 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     fadeout();
 
     //reset values in the human and bot hands.
+
+    myDeck->cards = realloc(myDeck->cards, myDeck->size * sizeof(UBYTE));
+
+    HIDE_BKG;
+    HIDE_SPRITES;
+    HIDE_WIN;
+
+    // set_bkg_tiles(0, 0, 20, 18, bkg_tab);
+    
+    // init_bkg(37);
+    if(human->hd.size > 2){
+        set_bkg_tiles(4, 8, 4, 5, bkg_1_cards);
+        set_bkg_tiles(8, 8, 5, 5, bkg_tab);
+    }
+    if(bot->hd.size > 2){ 
+        set_bkg_tiles(8, 1, 5, 2, bkg_tab);
+    }
+    set_bkg_tiles(4, 1, 4, 5, bkg_1_cards);
+    set_bkg_tiles(8,3, 12, 3, bkg_tab);
+    set_bkg_tiles(4,6, 14, 2, bkg_tab);
+    // set_bkg_tiles(0, 8, 4, 5, bkg_score_w_card1);
     for(i = 0; i < 6; i++){
         human->hd.cards[i].value = 0;
         bot->hd.cards[i].value = 0;
@@ -429,42 +470,34 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
         set_sprite_tile(i, 0);
     }
     
-    HIDE_BKG;
-    HIDE_SPRITES;
-    HIDE_WIN;
+    // set_bkg_tiles(0, 1, 4, 5, bkg_score_w_card1);
+    // set_bkg_tiles(15, 1, 5, 2, bkg_hs_o);
 
-    set_bkg_tiles(0, 0, 20, 18, bkg_tab);
-    set_bkg_tiles(0, 8, 8, 5, bkg_5_cards);
-    set_bkg_tiles(0, 8, 4, 5, bkg_score_w_card1);
-
-    set_bkg_tiles(0, 1, 8, 5, bkg_5_cards);
-    set_bkg_tiles(0, 1, 4, 5, bkg_score_w_card1);
-    set_bkg_tiles(15, 1, 5, 2, bkg_hs_o);
-
-    set_win_tiles(0,0,18,1, bkg_cash_bet);
-    move_win(7,135);
+    // set_win_tiles(0,0,18,1, bkg_cash_bet);
+    // move_win(7,135);
     // if (human->cash == 0){
     //     main();
     // }
     // else{
     *p_numOG = (*p_numOG) + 1;
+    performantdelay(5);
     play_game(myDeck, human, bot, true);
     // }
 }
 void main(){
     //the starting position for the player's tiles to be displayed
-    printf("\n\n\n\n\n\n\t\tBlackjack\n\n\n\n\n\n\t\t\tPRESS START");
+    printf("\n\n\n\n\n\n\t\t  Blackjack\n\n\n\n\n\n\t\t\tPRESS START");
     
     waitpad(J_START);
     fadeout();
     set_bkg_data(0,120,bkg_tiles_alt);                  //load in the background tiles (also used in window layer)
-    set_bkg_tiles(0, 0, 20, 18, bkg_tab);               //draws the blank "table" background to the screen
+    init_bkg(37);                                         //draws the blank "table" background to the screen
     set_sprite_data(0,114,card_tiles);                  //loads in the tiles used for the cards. 
     //used to displayer player's cards
-    set_bkg_tiles(0, 8, 8, 5, bkg_5_cards);             //loads in the "5" card background for 
+    set_bkg_tiles(4, 8, 4, 5, bkg_1_cards);             //loads in the "5" card background for 
     set_bkg_tiles(0, 8, 4, 5, bkg_score_w_card1);       //loads in the "1st" card and the score
     //used to display dealer's cards
-    set_bkg_tiles(0, 1, 8, 5, bkg_5_cards);
+    set_bkg_tiles(4, 1, 4, 5, bkg_1_cards);
     set_bkg_tiles(0, 1, 4, 5, bkg_score_w_card1);
     //displays the hit or stand options
     set_bkg_tiles(15, 1, 5, 2, bkg_hs_o);
@@ -483,7 +516,7 @@ void main(){
     bot.cash = 0;
     bot.bet = 0;
     bot.half_dollar = false;
-    human.cash = 700;
+    human.cash = 1500;
     human.bet = 25;
     human.half_dollar = false;
     hand_init(&human.hd, 32, 80, &sprite_count);

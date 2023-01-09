@@ -1,0 +1,12 @@
+*.asm
+*.lst
+*.ihx
+*.sym
+*.o
+*.sym
+
+*.ilk
+*.map
+*.cdb
+*.adb
+*.json
