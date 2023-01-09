@@ -208,40 +208,68 @@ void insurance(player *p){
         set_bkg_tiles(15, 1, 5, 2, bkg_hs_o);
     }
 }
+/*
+void split_hand_game(deck *mydeck, player *human, uint8_t *sprite_count){
+    hand split_hand;
+    uint8_t hidden_card_x = 0;
+    uint8_t hidden_card_y = 8;
+    hand_init(&split_hand, 32,120,sprite_count);
+    card_init(&split_hand.cards[0], human->hd.cards[1].suit_rank, 32,120, sprite_count);
+    // player_split_cards[0] = human->hd.cards[0].suit_rank;
+    // player_split_cards[7] = human->hd.cards[1].suit_rank;
+    // human->hd.size = 1;
+    split_hand.size = 1;
+    // recieve_card(&(human->hd), mydeck,sprite_count,1);
+    //replacing the second card in the first hand with a new hand, whilst, maintaining the sprite ID's 
+    human->hd.cards[1].suit_rank = mydeck->card_rep[mydeck->size];
+    human->hd.cards[1].value = (mydeck->card_rep[mydeck->size] & 0b1111);
+    if (human->hd.cards[1].value > 10){
+        human->hd.cards[1].value = 10;
+    }
+    mydeck->size--;
+    score_calc(&(human->hd));
+    recieve_card(&split_hand, mydeck,sprite_count,1);
+    // recieve_card(mydeck);
 
-// void split_hand_game(deck *mydeck, player *human, uint8_t *sprite_count){
-//     hand split_hand;
-//     uint8_t hidden_card_x = 0;
-//     uint8_t hidden_card_y = 8;
-//     hand_init(&split_hand, 32,120,sprite_count);
-//     card_init(&split_hand.cards[0], human->hd.cards[1].suit_rank, 32,120, sprite_count);
-//     // player_split_cards[0] = human->hd.cards[0].suit_rank;
-//     // player_split_cards[7] = human->hd.cards[1].suit_rank;
-//     // human->hd.size = 1;
-//     split_hand.size = 1;
-//     // recieve_card(&(human->hd), mydeck,sprite_count,1);
-//     //replacing the second card in the first hand with a new hand, whilst, maintaining the sprite ID's 
-//     human->hd.cards[1].suit_rank = mydeck->card_rep[mydeck->size];
-//     human->hd.cards[1].value = (mydeck->card_rep[mydeck->size] & 0b1111);
-//     if (human->hd.cards[1].value > 10){
-//         human->hd.cards[1].value = 10;
-//     }
-//     mydeck->size--;
-//     score_calc(&(human->hd));
-//     recieve_card(&split_hand, mydeck,sprite_count,1);
-//     // recieve_card(mydeck);
-
-//     set_bkg_tiles(hidden_card_x, hidden_card_y, 9, 5, bkg_6_cards);
-//     hidden_card_x += 1;
-//     set_bkg_tiles(0, hidden_card_y, 4, 5, bkg_score_w_card1);
-//     set_bkg_tiles(hidden_card_x, hidden_card_y+5, 9, 5, bkg_6_cards);
-//     hidden_card_x += 1;
-//     set_bkg_tiles(0, hidden_card_y+5, 4, 5, bkg_score_w_card1);
+    set_bkg_tiles(hidden_card_x, hidden_card_y, 9, 5, bkg_6_cards);
+    hidden_card_x += 1;
+    set_bkg_tiles(0, hidden_card_y, 4, 5, bkg_score_w_card1);
+    set_bkg_tiles(hidden_card_x, hidden_card_y+5, 9, 5, bkg_6_cards);
+    hidden_card_x += 1;
+    set_bkg_tiles(0, hidden_card_y+5, 4, 5, bkg_score_w_card1);
 
     
-//     display_hand(&(human->hd));
-//     display_hand(&split_hand);
+    display_hand(&(human->hd));
+    display_hand(&split_hand);
+}
+*/
+
+// void DealCards(deck * myDeck, player * human, player * bot, uint8_t * sprite_count){
+
 // }
+
+void init_gfx(){
+    set_bkg_data(0,120,bkg_tiles_alt);                  //load in the background tiles (also used in window layer)
+    init_bkg(37);                                         //draws the blank "table" background to the screen
+    set_sprite_data(0,114,card_tiles);                  //loads in the tiles used for the cards. 
+    //used to displayer player's cards
+    set_bkg_tiles(4, 8, 4, 5, bkg_1_cards);             //loads in the "5" card background for 
+    set_bkg_tiles(0, 8, 4, 5, bkg_score_w_card1);       //loads in the "1st" card and the score
+    //used to display dealer's cards
+    set_bkg_tiles(4, 1, 4, 5, bkg_1_cards);
+    set_bkg_tiles(0, 1, 4, 5, bkg_score_w_card1);
+    //displays the hit or stand options
+    set_bkg_tiles(15, 1, 5, 2, bkg_hs_o);
+    set_win_tiles(0,0,18,1, bkg_cash_bet);              //displays the cash and bet stuff
+    move_win(7,135);                                    //offset from tile grid by a single pixel
+    set_win_tile_xy(10,0,3);
+
+    SHOW_BKG;
+    SHOW_SPRITES;
+    SHOW_WIN;
+    DISPLAY_ON;
+}
+
 
 void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     uint8_t bet = 0;    //this will hold the value of the input in that window
@@ -279,16 +307,6 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     DrawNumber((uint8_t)4,0, (uint16_t)human->cash,6);
     set_win_tile_xy(10,0,3);
     DrawNumber(14, 0, (uint16_t)human->bet,4);
-    // hand_init(&(human->hd), 32, 80, &spr_c);
-    // hand_init(&bot->hd, 32, 24, &spr_c);           //dealer's starting x = 32, y = 24
-    //test
-    // deck tmp_d;
-    // tmp_d.size = 2;
-    // tmp_d.card_rep[0] = 0x11;
-    // tmp_d.card_rep[1] = 0x21;
-    // tmp_d.card_rep[2] = 0x31;
-    // recieve_card(&human->hd, &tmp_d, &spr_c, 2);
-    
 
     //deals 2 cards to both dealer and human
     recieve_card(&human->hd, myDeck, &spr_c, 2);
@@ -321,10 +339,10 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     display_last_card(&bot->hd);
     display_hand(&(human->hd));
 
-    SHOW_BKG;
-    SHOW_SPRITES;
-    SHOW_WIN;
-    DISPLAY_ON;
+    // SHOW_BKG;
+    // SHOW_SPRITES;
+    // SHOW_WIN;
+    // DISPLAY_ON;
 
     fadein();
 
@@ -433,17 +451,10 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     waitpad(J_START | J_A | J_B);
     fadeout();
 
-    //reset values in the human and bot hands.
-
+    //remove played cards from deck
     myDeck->cards = realloc(myDeck->cards, myDeck->size * sizeof(UBYTE));
 
-    HIDE_BKG;
-    HIDE_SPRITES;
-    HIDE_WIN;
-
-    // set_bkg_tiles(0, 0, 20, 18, bkg_tab);
-    
-    // init_bkg(37);
+    //reset values in the human and bot hands
     if(human->hd.size > 2){
         set_bkg_tiles(4, 8, 4, 5, bkg_1_cards);
         set_bkg_tiles(8, 8, 5, 5, bkg_tab);
@@ -454,7 +465,7 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
     set_bkg_tiles(4, 1, 4, 5, bkg_1_cards);
     set_bkg_tiles(8,3, 12, 3, bkg_tab);
     set_bkg_tiles(4,6, 14, 2, bkg_tab);
-    // set_bkg_tiles(0, 8, 4, 5, bkg_score_w_card1);
+
     for(i = 0; i < 6; i++){
         human->hd.cards[i].value = 0;
         bot->hd.cards[i].value = 0;
@@ -470,44 +481,18 @@ void play_game(deck *myDeck, player *human, player *bot, bool same_bet){
         set_sprite_tile(i, 0);
     }
     
-    // set_bkg_tiles(0, 1, 4, 5, bkg_score_w_card1);
-    // set_bkg_tiles(15, 1, 5, 2, bkg_hs_o);
 
-    // set_win_tiles(0,0,18,1, bkg_cash_bet);
-    // move_win(7,135);
-    // if (human->cash == 0){
-    //     main();
-    // }
-    // else{
     *p_numOG = (*p_numOG) + 1;
-    performantdelay(5);
-    play_game(myDeck, human, bot, true);
-    // }
+    
+    // wait_vbl_done();
+    // play_game(myDeck, human, bot, true);
 }
 void main(){
-    //the starting position for the player's tiles to be displayed
-    printf("\n\n\n\n\n\n\t\t  Blackjack\n\n\n\n\n\n\t\t\tPRESS START");
-    
+    printf("\n\n\n\n\n\n\t\t   Blackjack\n\n\n\n\n\n\t\t\tPRESS START");
     waitpad(J_START);
     fadeout();
-    set_bkg_data(0,120,bkg_tiles_alt);                  //load in the background tiles (also used in window layer)
-    init_bkg(37);                                         //draws the blank "table" background to the screen
-    set_sprite_data(0,114,card_tiles);                  //loads in the tiles used for the cards. 
-    //used to displayer player's cards
-    set_bkg_tiles(4, 8, 4, 5, bkg_1_cards);             //loads in the "5" card background for 
-    set_bkg_tiles(0, 8, 4, 5, bkg_score_w_card1);       //loads in the "1st" card and the score
-    //used to display dealer's cards
-    set_bkg_tiles(4, 1, 4, 5, bkg_1_cards);
-    set_bkg_tiles(0, 1, 4, 5, bkg_score_w_card1);
-    //displays the hit or stand options
-    set_bkg_tiles(15, 1, 5, 2, bkg_hs_o);
-    set_win_tiles(0,0,18,1, bkg_cash_bet);              //displays the cash and bet stuff
-    move_win(7,135);                                    //offset from tile grid by a single pixel
-    set_win_tile_xy(10,0,3);
-    //note on how the card display works:
-    // 1) loads in the 5 card image to the backgorund 
-    // 2) covers part of the image with the score to only show 2 cards
-    // 3) each time a card is added, the card background basically shifts over by 1 tile.
+    init_gfx();
+    
     uint8_t sprite_count = 0;
     deck mdeck;
     shuffle(&mdeck);
@@ -522,5 +507,10 @@ void main(){
     hand_init(&human.hd, 32, 80, &sprite_count);
     hand_init(&bot.hd, 32, 24, &sprite_count);           //dealer's starting x = 32, y = 24
 
-    play_game(&mdeck, &human, &bot, true);
+    while(1){
+        play_game(&mdeck, &human, &bot, true);
+        
+        performantdelay(9);
+    }
+    
 }

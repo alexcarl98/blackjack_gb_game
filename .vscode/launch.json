@@ -9,7 +9,7 @@
             "type": "emulicious-debugger",
             "request": "launch",
             "name": "Launch in Emulicious",
-            "program": "${workspaceFolder}/main.gb",         //change this when debugging differently named .gb files
+            "program": "${workspaceFolder}/obj/main.gb",         //change this when debugging differently named .gb files
             "port": 58870,
             "stopOnEntry": true
         }
