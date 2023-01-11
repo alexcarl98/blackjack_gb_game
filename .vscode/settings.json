@@ -6,6 +6,12 @@
         "bkg_hs_1.h": "c",
         "crd.h": "c",
         "card_sprites.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "bkg_insurance.h": "c",
+        "bkg_table.h": "c",
+        "bkg_sur.h": "c",
+        "bkg_pushgm.h": "c",
+        "bkg_sc_c1.h": "c",
+        "bkg_win_cash_bet.h": "c"
     }
 }

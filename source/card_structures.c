@@ -42,9 +42,9 @@ typedef struct Deck{
     UBYTE *cards;
 }deck;
 
-void shuffle(deck *playing_deck);
+void shuffle(deck *playing_deck, uint8_t n);
 
-void shuffle(deck * playing_deck){
+void shuffle(deck * playing_deck, uint8_t n){
     // The below hex values are used to represent a card
     // the values are out of order, but there's about 4 decks in these cards
     //The leftmost hex value determines the suit and the right hex value determine the card rank
@@ -96,10 +96,34 @@ void shuffle(deck * playing_deck){
     0x2C, 0x3C, 0x41, 0x42, 0x44,
     0x46,0x47, 0x48, 0x49, 0x4A,
     0x4B,0x4C,
+    0x11, 0x2B, 0x13, 0x45, 0x26, 
+    0x14, 0x15,0x38, 0x17,  0x19, 
+    0x1A, 0x1B,0x43, 0x1C,  0x21, 
+    0x22, 0x23, 0x37,0x27, 0x4D,
+    0x3D, 0x28, 0x16, 0x29, 0x12,
+    0x2A, 0x2D, 0x31, 0x32, 0x33,
+    0x34, 0x35, 0x24, 0x36, 0x18,
+    0x39, 0x25, 0x1D, 0x3A, 0x3B,
+    0x2C, 0x3C, 0x41, 0x42, 0x44,
+    0x46,0x47, 0x48, 0x49, 0x4A,
+    0x4B,0x4C,
+    0x11, 0x2B, 0x13, 0x45, 0x26, 
+    0x14, 0x15,0x38, 0x17,  0x19, 
+    0x1A, 0x1B,0x43, 0x1C,  0x21, 
+    0x22, 0x23, 0x37,0x27, 0x4D,
+    0x3D, 0x28, 0x16, 0x29, 0x12,
+    0x2A, 0x2D, 0x31, 0x32, 0x33,
+    0x34, 0x35, 0x24, 0x36, 0x18,
+    0x39, 0x25, 0x1D, 0x3A, 0x3B,
+    0x2C, 0x3C, 0x41, 0x42, 0x44,
+    0x46,0x47, 0x48, 0x49, 0x4A,
+    0x4B,0x4C
     };
-
-    uint8_t i,t;
-    playing_deck->size = 208;
+    //I want to change this eventually but for now..
+    if (n > 4){n = 4;}
+    uint16_t i,t;
+    // playing_deck->size = 208;
+    playing_deck->size = 52 * n;
     playing_deck->cards = (UBYTE*)malloc(playing_deck->size * sizeof(UBYTE));
     
     uint16_t seed = LY_REG;
@@ -117,9 +141,8 @@ void shuffle(deck * playing_deck){
 
 //================================( HAND )================================//
 typedef struct Hand{
-    card cards[6];
+    card cards[7];
     UBYTE card_reps[8];
-    UBYTE sc_spr_id[2];         //score sprite id's
     UBYTE design_spr_id[6];     // sprite id's for player's upcard design
     UBYTE score;
     UBYTE size;
@@ -143,7 +166,6 @@ _
 void hand_init(hand *self, uint8_t start_x, uint8_t start_y, uint8_t *sprite_count);
 void display_card_1(UBYTE ID_rank, UBYTE ID_suit, uint8_t x, uint8_t y);
 void display_hand(hand *self);
-void display_score(hand *self);
 void recieve_card(hand *self, deck *d, uint8_t *sprite_count, uint8_t n);
 void calculate_score(hand * self);
 void display_last_card(hand *h);
@@ -159,15 +181,6 @@ void hand_init(hand *self, uint8_t start_x, uint8_t start_y, uint8_t *sprite_cou
     self->flags = 0x0;
 
     for(i = 0; i < 8; i++){self->card_reps[i] = 0;}     //set card_representation array to 0's
-
-    //designate sprite tiles for the score
-    set_sprite_tile(*sprite_count, 0);
-    self->sc_spr_id[0] = (UBYTE)(*sprite_count);
-    *sprite_count += 1;                                 //  THIS is how you increment pointers
-
-    set_sprite_tile(*sprite_count, 0);
-    self->sc_spr_id[1] = (UBYTE)(*sprite_count);
-    *sprite_count += 1;
 
     //designate sprite tiles for the displaying card
     for(i = 0; i < 6; i++){
@@ -191,37 +204,7 @@ void display_hand(hand *self){
                         self->h_x + temp_x, self->h_y);
         temp_x += 8;
     }
-    display_score(self);
     display_last_card(&(*self));
-}
-
-void display_score(hand * self){
-    UBYTE new_tile_upper = 100;            //declaration for left tile
-    UBYTE new_tile_lower = 100;           //declaration for right tile
-    UBYTE i = 0;
-    UBYTE temp = self->score;
-    if ((self->flags & 1) != 0){            //display 'BJ' if player has blackjack
-        new_tile_upper += 10;
-        new_tile_lower += 11;
-    }else if(temp > 21){                    //display 'bust' 
-        new_tile_upper += 12;
-        new_tile_lower += 13;
-    }
-    else if (temp >= 10){
-        while(temp >= 10){
-            temp -= 10;
-            i++;
-        }
-        new_tile_upper += i;              // so it if i's 1, the upper tile is 0
-        new_tile_lower += temp;
-    }else{
-        new_tile_lower += temp;
-    }
-    set_sprite_tile(self->sc_spr_id[0], new_tile_upper);     //will go at h_x - 16, h_y + 32
-    move_sprite(self->sc_spr_id[0], (self->h_x - 16), (self->h_y +24));
-
-    set_sprite_tile(self->sc_spr_id[1], new_tile_lower);     //will go at h_x - 8, h_y + 32
-    move_sprite(self->sc_spr_id[1], (self->h_x - 8), (self->h_y +24));
 }
 
 void recieve_card(hand *self, deck *d, uint8_t *sprite_count, uint8_t n){
@@ -276,6 +259,12 @@ void calculate_score(hand * self){
     if (self->size == 2){
         if ((9 <= tmp_score) && (tmp_score <=11)){self->flags |= 0b10000;}     //set dd_hand flag to 1
         else{self->flags &= 0b11101111;}  //set dd_hand to 0
+        if (((self->card_reps[0] & 0xF) == (self->card_reps[1] & 0xF)) |
+            (((self->card_reps[0] & 0xF) >= 0xA) & ((self->card_reps[1] & 0xF) >= 0xA))){
+                self->flags |= 0b100000;         // set split flag to 1
+        }
+    }else{
+        self->flags &= 0b11011111;;         // set split flag to 0
     }
     self->score = tmp_score;
 }

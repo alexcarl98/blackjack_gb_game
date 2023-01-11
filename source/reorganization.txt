@@ -1,0 +1,36 @@
+Functions in main:
+
+showing numbers on screen:
+    >> display_game_info(uint16_t number)
+        >>Shows how many decks have been played and eventually will show the count
+        >> Associated functions:    DrawNumberBkg
+    
+    >> DrawNumberBkg(uint8_t x,uint8_t y, uint16_t number,uint8_t digits)
+        >>Writes a number to the background layer given its length, value, and coordinates
+
+    >> show_score(hand *self)
+        >> Display's the score of a given hand
+        >> associated functions:    DrawNumberBkg
+    
+    >> DrawNumber(uint8_t x,uint8_t y, uint16_t number,uint8_t digits)
+        >> Writes numbers to the window
+        >> exactly the same as DrawNumberBKG
+            except for the: set_win_tile_xy and set_bkg_tile_xy
+
+the following 3 should be placed in a common.c file
+    >> performantdelay(uint8_t numloops)
+        >> provides a non-CPU intensive delay
+    >> fadein()
+    >> fadeout()
+
+game specific functions:
+    >> void dealer_draws(deck *d, hand *dlr_h, uint8_t * sprite_count)
+        >> fulfills the action of the dealer drawing untill they get 17
+        >> associated functions : from card_structures: recieve_card
+
+    >> UBYTE outcome(UBYTE p_score, UBYTE p_flags, UBYTE d_score, UBYTE d_flags)
+        >> determines a game's outcome given the scores and flags
+    
+    >> void settle_score(player *dlr, player *p)
+        >> associated functions : outcome
+    

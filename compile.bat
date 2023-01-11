@@ -6,6 +6,7 @@ c:\gbdk\bin\lcc     -c -o obj\bkg_sc_c1.o res\bkg_sc_c1.c
 c:\gbdk\bin\lcc     -c -o obj\bkg_hs_opt.o res\bkg_hs_opt.c
 c:\gbdk\bin\lcc     -c -o obj\bkg_win.o res\bkg_win.c
 c:\gbdk\bin\lcc     -c -o obj\bkg_pushgm.o res\bkg_pushgm.c
+c:\gbdk\bin\lcc     -c -o obj\bkg_game_info.o res\bkg_game_info.c
 c:\gbdk\bin\lcc     -c -o obj\bkg_lose.o res\bkg_lose.c
 c:\gbdk\bin\lcc     -c -o obj\bkg_sur.o res\bkg_sur.c
 c:\gbdk\bin\lcc     -c -o obj\bkg_table.o res\bkg_table.c
@@ -14,8 +15,8 @@ c:\gbdk\bin\lcc     -c -o obj\bkg_insurance.o res\bkg_insurance.c
 c:\gbdk\bin\lcc     -c -o obj\card_sprites.o res\card_sprites.c
 c:\gbdk\bin\lcc     -c -o obj\bkg_win_cash_bet.o res\bkg_win_cash_bet.c
 
-@REM Compile a .gb file from the compiled .o files
 c:\gbdk\bin\lcc -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -o obj\main.gb obj\*.o
+@REM Compile a .gb file from the compiled .o files
 @REM obj\bkg_single_cards.o
 
 
