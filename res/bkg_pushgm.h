@@ -7,8 +7,8 @@
  Info:
    Section       : 
    Bank          : 0
-   Map size      : 11 x 3
-   Tile set      : background_tiles_alt.gbr
+   Map size      : 6 x 3
+   Tile set      : C:\Users\alexa\OneDrive\Desktop\C Files\GB\blackjack_gb_game\res_\gbr_files\bkg_tiles_reformated.gbr
    Plane count   : 1 plane (8 bits)
    Plane order   : Tiles are continues
    Tile offset   : 0
@@ -20,7 +20,7 @@
 #ifndef __bkg_pushgm_h_INCLUDE
 #define __bkg_pushgm_h_INCLUDE
 
-#define bkg_pushWidth 11
+#define bkg_pushWidth 6
 #define bkg_pushHeight 3
 #define bkg_pushBank 0
 

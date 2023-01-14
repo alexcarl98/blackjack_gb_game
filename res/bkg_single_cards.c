@@ -8,7 +8,7 @@
    Section       : 
    Bank          : 0
    Map size      : 4 x 5
-   Tile set      : background_tiles_alt.gbr
+   Tile set      : C:\Users\alexa\OneDrive\Desktop\C Files\GB\blackjack_gb_game\res_\gbr_files\bkg_tiles_reformated.gbr
    Plane count   : 1 plane (8 bits)
    Plane order   : Tiles are continues
    Tile offset   : 0
@@ -18,15 +18,14 @@
 
 */
 
-#define bkg_single_cardsWidth 4
-#define bkg_single_cardsHeight 5
-#define bkg_single_cardsBank 0
+#define bkg_1_cardsWidth 4
+#define bkg_1_cardsHeight 5
+#define bkg_1_cardsBank 0
 
-// #define bkg_single_cards bkg_1_cards
 const unsigned char bkg_1_cards[] =
 {
-  0x33,0x37,0x37,0x39,0x01,0x00,0x00,0x31,0x01,0x00,
-  0x00,0x31,0x01,0x00,0x00,0x31,0x34,0x36,0x36,0x35
+  0x39,0x3B,0x3B,0x3D,0x37,0x2F,0x2F,0x3E,0x37,0x2F,
+  0x2F,0x3E,0x37,0x2F,0x2F,0x3E,0x3A,0x3C,0x3C,0x3F
 };
 
 /* End of BKG_SINGLE_CARDS.C */

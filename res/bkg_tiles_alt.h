@@ -1,6 +1,6 @@
 /*
 
- BKG_TILES_ALT.H
+ BKG_TILES.H
 
  Include File.
 
@@ -22,14 +22,14 @@
 
 */
 
-#ifndef __bkg_tiles_alt_h_INCLUDE
-#define __bkg_tiles_alt_h_INCLUDE
+#ifndef __bkg_tiles_h_INCLUDE
+#define __bkg_tiles_h_INCLUDE
 
 /* Bank of tiles. */
-#define bkg_tiles_altBank 0
+#define bkg_tilesBank 0
 /* Start of tile array. */
 extern const unsigned char bkg_tiles_alt[];
 
 #endif
 
-/* End of BKG_TILES_ALT.H */
+/* End of BKG_TILES.H */

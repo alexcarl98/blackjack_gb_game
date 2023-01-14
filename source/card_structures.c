@@ -1,6 +1,18 @@
 #include <gb/gb.h>
 #include <stdio.h>
 #include <stdbool.h>
+int count = 0;
+
+void count_card(UBYTE hex_card){
+    int temp_val;
+    int *count_ptr = &count;
+    temp_val = (int)(hex_card & 0xF);
+    if ((temp_val >= 10) || (temp_val == 1)){
+        *count_ptr -= 1;
+    }else if ((1 < temp_val) && (temp_val < 7)){
+        *count_ptr += 1;
+    }
+}
 
 //================================( CARD )================================//
 typedef struct CardSprite{
@@ -217,6 +229,7 @@ void recieve_card(hand *self, deck *d, uint8_t *sprite_count, uint8_t n){
     for(i = 0; i < n; i++){
         // tmp = d->card_rep[d->size];
         tmp = d->cards[(d->size - 1)];
+        count_card(tmp);
         self->card_reps[self->size] = tmp;
         d->size--;
         card_init(&(self->cards[(int)self->size]), tmp, tmp_x, self->h_y, &(*sprite_count));

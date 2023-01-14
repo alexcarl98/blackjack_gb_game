@@ -7,8 +7,8 @@
  Info:
    Section       : 
    Bank          : 0
-   Map size      : 5 x 2
-   Tile set      : background_tiles_alt.gbr
+   Map size      : 5 x 5
+   Tile set      : C:\Users\alexa\OneDrive\Desktop\C Files\GB\blackjack_gb_game\res_\gbr_files\bkg_tiles_reformated.gbr
    Plane count   : 1 plane (8 bits)
    Plane order   : Tiles are continues
    Tile offset   : 0
@@ -19,12 +19,14 @@
 */
 
 #define bkg_hs_oWidth 5
-#define bkg_hs_oHeight 2
+#define bkg_hs_oHeight 5
 #define bkg_hs_oBank 0
 
 const unsigned char bkg_hs_o[] =
 {
-  0x05,0x0B,0x0C,0x25,0x25,0x06,0x0D,0x0E,0x0F,0x10
+  0x44,0x4A,0x4B,0x30,0x30,0x46,0x4C,0x4D,0x4E,0x4F,
+  0x47,0x54,0x55,0x56,0x30,0x48,0x50,0x51,0x52,0x53,
+  0x49,0x57,0x58,0x59,0x30
 };
 
 /* End of BKG_HS_OPT.C */

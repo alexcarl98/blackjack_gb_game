@@ -12,6 +12,9 @@
         "bkg_sur.h": "c",
         "bkg_pushgm.h": "c",
         "bkg_sc_c1.h": "c",
-        "bkg_win_cash_bet.h": "c"
+        "bkg_win_cash_bet.h": "c",
+        "king.h": "c",
+        "bkg_tiles_alt.h": "c",
+        "bkg_hs_opt.h": "c"
     }
 }
