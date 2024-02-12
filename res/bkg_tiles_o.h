@@ -1,6 +1,6 @@
 /*
 
- BKG_TILES_ALT.H
+ BKG_TILES_O.H
 
  Include File.
 
@@ -10,7 +10,7 @@
   Compression          : None.
   Counter              : None.
   Tile size            : 8 x 8
-  Tiles                : 0 to 123
+  Tiles                : 0 to 98
 
   Palette colors       : None.
   SGB Palette          : None.
@@ -22,14 +22,14 @@
 
 */
 
-#ifndef __bkg_tiles_alt_h_INCLUDE
-#define __bkg_tiles_alt_h_INCLUDE
+#ifndef __bkg_tiles_o_h_INCLUDE
+#define __bkg_tiles_o_h_INCLUDE
 
 /* Bank of tiles. */
-#define bkg_tiles_altBank 0
+#define bkg_tiles_optBank 0
 /* Start of tile array. */
-extern const unsigned char bkg_tiles_alt[];
+extern const unsigned char bkg_tiles_opt[];
 
 #endif
 
-/* End of BKG_TILES_ALT.H */
+/* End of BKG_TILES_O.H */

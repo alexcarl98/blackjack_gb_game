@@ -22,9 +22,9 @@ typedef struct CardSprite{
     uint8_t y;
 }card;
 
-void card_init(card * self, UBYTE s_r, uint8_t x, uint8_t y, uint8_t *sprite_count);
+void card_init(card * self, UBYTE s_r, uint8_t x, uint8_t y);
 
-void card_init(card * self, UBYTE s_r, uint8_t x, uint8_t y, uint8_t *sprite_count){
+void card_init(card * self, UBYTE s_r, uint8_t x, uint8_t y){
     UBYTE r;
     UBYTE s;
     UBYTE suit_isolater;
@@ -39,13 +39,13 @@ void card_init(card * self, UBYTE s_r, uint8_t x, uint8_t y, uint8_t *sprite_cou
     self->x = x;                             //x position
     self->y = y;                             //y position
 
-    set_sprite_tile(*sprite_count, (int)r);
-    self->spr_id[0] = (UBYTE)(*sprite_count);
-    *sprite_count = (*sprite_count) + 1;        //  THIS is how you increment pointers
+    // set_sprite_tile(*sprite_count, (int)r);
+    // self->spr_id[0] = (UBYTE)(*sprite_count);
+    // *sprite_count = (*sprite_count) + 1;        //  THIS is how you increment pointers
 
-    set_sprite_tile(*sprite_count, (int)s);
-    self->spr_id[1] = (UBYTE)(*sprite_count);
-    *sprite_count = (*sprite_count) + 1;
+    // set_sprite_tile(*sprite_count, (int)s);
+    // self->spr_id[1] = (UBYTE)(*sprite_count);
+    // *sprite_count = (*sprite_count) + 1;
 }
 //================================( DECK )================================//
 
@@ -176,9 +176,9 @@ _
 **************************************************/
 
 void hand_init(hand *self, uint8_t start_x, uint8_t start_y, uint8_t *sprite_count);
-void display_card_1(UBYTE ID_rank, UBYTE ID_suit, uint8_t x, uint8_t y);
-void display_hand(hand *self);
-void recieve_card(hand *self, deck *d, uint8_t *sprite_count, uint8_t n);
+// void display_card_1(UBYTE ID_rank, UBYTE ID_suit, uint8_t x, uint8_t y);
+// void display_hand(hand *self);
+void recieve_card(hand *self, deck *d, uint8_t n);
 void calculate_score(hand * self);
 void display_last_card(hand *h);
 
@@ -189,7 +189,6 @@ void hand_init(hand *self, uint8_t start_x, uint8_t start_y, uint8_t *sprite_cou
     self->h_y = start_y;
     self->score = 0;
     self->size = 0;
-    // for(i = 0; i < 6; i++){self->cards[i].value = 0x0;}
     self->flags = 0x0;
 
     for(i = 0; i < 8; i++){self->card_reps[i] = 0;}     //set card_representation array to 0's
@@ -202,24 +201,26 @@ void hand_init(hand *self, uint8_t start_x, uint8_t start_y, uint8_t *sprite_cou
     }
 }
 
-void display_card_1(UBYTE ID_rank, UBYTE ID_suit, uint8_t x, uint8_t y){
-    move_sprite(ID_rank, x, y);     //rank  !1
-    move_sprite(ID_suit, x, y+8);   // suit !H
-}
+// void display_card_1(UBYTE ID_rank, UBYTE ID_suit, uint8_t x, uint8_t y){
+//     move_sprite(ID_rank, x, y);     //rank  !1
+//     move_sprite(ID_suit, x, y+8);   // suit !H
+// }
 
-void display_hand(hand *self){
-    uint8_t i;
-    uint8_t temp_x = 0;
-    for(i = 0; i < self->size; i++){
-        display_card_1(self->cards[i].spr_id[0], 
-                        self->cards[i].spr_id[1],
-                        self->h_x + temp_x, self->h_y);
-        temp_x += 8;
-    }
-    display_last_card(&(*self));
-}
+// void display_hand(hand *self){
+//     uint8_t i;
+//     uint8_t temp_x = 0;
+//     // for(i = 0; i < self->size; i++){
+//     //     display_card_1(self->cards[i].spr_id[0], 
+//     //                     self->cards[i].spr_id[1],
+//     //                     self->h_x + temp_x, self->h_y);
+//     //     temp_x += 8;
+//     // }
+//     display_last_card(&(*self));
+// }
 
-void recieve_card(hand *self, deck *d, uint8_t *sprite_count, uint8_t n){
+
+
+void recieve_card(hand *self, deck *d, uint8_t n){
     //I will not be forgetting this any time soon
     // don't forget about pointer manipulation
     uint8_t i;
@@ -232,7 +233,7 @@ void recieve_card(hand *self, deck *d, uint8_t *sprite_count, uint8_t n){
         count_card(tmp);
         self->card_reps[self->size] = tmp;
         d->size--;
-        card_init(&(self->cards[(int)self->size]), tmp, tmp_x, self->h_y, &(*sprite_count));
+        card_init(&(self->cards[(int)self->size]), tmp, tmp_x, self->h_y);
         self->size += 1;
         tmp_x += 8;
     }

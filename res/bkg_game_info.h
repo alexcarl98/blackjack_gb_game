@@ -7,8 +7,8 @@
  Info:
    Section       : 
    Bank          : 0
-   Map size      : 12 x 6
-   Tile set      : C:\Users\alexa\OneDrive\Desktop\C Files\GB\blackjack_gb_game\res_\gbr_files\bkg_tiles_reformated.gbr
+   Map size      : 12 x 9
+   Tile set      : bkg_tiles_opt.gbr
    Plane count   : 1 plane (8 bits)
    Plane order   : Tiles are continues
    Tile offset   : 0
@@ -21,7 +21,7 @@
 #define __bkg_game_info_h_INCLUDE
 
 #define bkg_gm_infoWidth 12
-#define bkg_gm_infoHeight 6
+#define bkg_gm_infoHeight 9
 #define bkg_gm_infoBank 0
 
 extern const unsigned char bkg_gm_info[];

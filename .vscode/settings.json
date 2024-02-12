@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "Makefile": "makefile",
         "gb.h": "c",
         "stdio.h": "c",
         "stdbool.h": "c",
@@ -15,6 +16,7 @@
         "bkg_win_cash_bet.h": "c",
         "king.h": "c",
         "bkg_tiles_alt.h": "c",
-        "bkg_hs_opt.h": "c"
+        "bkg_hs_opt.h": "c",
+        "table_change.h": "c"
     }
 }

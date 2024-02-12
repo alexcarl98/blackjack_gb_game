@@ -25,6 +25,12 @@ c:\gbdk\bin\lcc     -c -o obj\chips_win.o res\chips_win.c
 c:\gbdk\bin\lcc     -c -o obj\hole_card.o res\hole_card.c
 c:\gbdk\bin\lcc     -c -o obj\table_change.o res\table_change.c
 
+c:\gbdk\bin\lcc     -c -o obj\starting_amt.o \res\starting_amt.c
+c:\gbdk\bin\lcc     -c -o obj\end_amt.o \res\end_amt.c
+c:\gbdk\bin\lcc     -c -o obj\press_to_chg_bet.o \res\press_to_chg_bet.c
+
+c:\gbdk\bin\lcc     -c -o obj\table_change.o res\bkg_tiles_o.c
+
 @REM c:\gbdk\bin\lcc     -c -o obj\splash.o res_\splash.c
 @REM c:\gbdk\bin\lcc     -c -o obj\king.o res_\king.c
 

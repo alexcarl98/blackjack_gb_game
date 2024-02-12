@@ -1,1 +1,2 @@
-@REM c:\gbdk\bin\lcc     -c -o obj\king.o res_\king.c
+\lcc     -c -o obj\bkg_pushgm.o res\bkg_pushgm.c
+c:\gbdk\bin\l
